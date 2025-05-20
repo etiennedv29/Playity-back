@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Types } = require("mongoose");
 
 const premiumDataSchema = new mongoose.Schema({
   submissionDate: { type: Date, required: true },
@@ -17,6 +18,7 @@ const achievementsSchema = new mongoose.Schema({
   oneFriend: { type: Boolean, default: false },
   fiveFriends: { type: Boolean, default: false },
 });
+
 const usersSchema = mongoose.Schema({
   firstName: {
     type: String,
@@ -35,15 +37,11 @@ const usersSchema = mongoose.Schema({
     required: true,
   },
   dateOfBirth: { type: Date },
-  hash: {
+  password: {
     type: String,
     required: true,
   },
   token: {
-    type: String,
-    required: true,
-  },
-  password: {
     type: String,
     required: true,
   },
@@ -54,11 +52,11 @@ const usersSchema = mongoose.Schema({
   roles: {
     type: [String],
     required: true,
-    default: "guest",
+    default: ["guest"],
   },
   partsPlayed: { type: [Types.ObjectId], ref: "parts", default: [] },
   friends: { type: [Types.ObjectId], ref: "users", default: [] },
-  premiumeData: premiumDataSchema,
+  premiumData: premiumDataSchema,
 });
 
 const usersModel = mongoose.model("users", usersSchema);
