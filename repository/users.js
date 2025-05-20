@@ -8,8 +8,19 @@ const getUserByEmail = async (email) => {
   });
 };
 
-const userRegister = async ({ username, password, firstName,lastName,email, avatar }) => {
-  const hash = bcrypt.hashSync(password, 10);
+const userRegister = async ({
+  username,
+  password,
+  firstName,
+  lastName,
+  email,
+  avatar,
+  connectionWithSocials,
+}) => {
+  let hash = "";
+  if (connectionWithSocials === true) {
+    hash = bcrypt.hashSync(password, 10);
+  }
 
   const newUser = new User({
     username,
@@ -19,6 +30,7 @@ const userRegister = async ({ username, password, firstName,lastName,email, avat
     password: hash,
     token: uid2(32),
     avatar,
+    connectionWithSocials,
   });
 
   return await newUser.save();

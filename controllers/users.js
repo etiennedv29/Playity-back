@@ -3,9 +3,10 @@ const { checkBody } = require("../utils/string");
 const bcrypt = require("bcrypt");
 
 const register = async (req, res, next) => {
+  console.log(req.body)
   try {
     if (
-      !checkBody(req.body, [
+      !req.body.connectionWithSocials && !checkBody(req.body, [
         "username",
         "password",
         "email",
