@@ -8,7 +8,7 @@ const getUserByEmail = async (email) => {
   });
 };
 
-const userRegister = async ({ username, password, firstName,lastName,email,avatar }) => {
+const userRegister = async ({ username, password, firstName,lastName,email, avatar }) => {
   const hash = bcrypt.hashSync(password, 10);
 
   const newUser = new User({
