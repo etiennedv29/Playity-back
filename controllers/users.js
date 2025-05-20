@@ -4,14 +4,27 @@ const bcrypt = require("bcrypt");
 
 const register = async (req, res, next) => {
   try {
-    if (!checkBody(req.body, ["username", "password","email","firstName","lastName"])) {
+    if (
+      !checkBody(req.body, [
+        "username",
+        "password",
+        "email",
+        "firstName",
+        "lastName",
+      ])
+    ) {
       return res.status(400).json({ error: "Missing or empty fields" });
     }
 
     const user = await getUserByEmail(req.body.email.toLowerCase());
 
     if (user === null) {
-      const userObject = await userRegister(req.body);
+      //generation aléatoire de l'avatar
+      const seed = Math.random().toString(36).substring(2, 12);
+      const avatar = `https://api.dicebear.com/7.x/adventurer/png?seed=${seed}`;
+
+      //saving the user with its avatar generated
+      const userObject = await userRegister({ avatar, ...req.body });
       res.json(userObject);
     } else {
       res.status(409).json({ error: "User already exists" });
@@ -27,9 +40,9 @@ const login = async (req, res, next) => {
     if (!checkBody(req.body, ["email", "password"])) {
       return res.status(400).json({ error: "Missing or empty fields" });
     }
-console.log(req.body.email)
+    console.log(req.body.email);
     const user = await getUserByEmail(req.body.email.toLowerCase());
-    console.log(user)
+    console.log(user);
 
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
       res.json(user);
