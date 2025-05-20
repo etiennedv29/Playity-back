@@ -2,20 +2,23 @@ const User = require("../models/users");
 const bcrypt = require("bcrypt");
 const uid2 = require("uid2");
 
-const getUserByUsername = async (username) => {
+const getUserByEmail = async (email) => {
   return await User.findOne({
-    username: { $regex: new RegExp("^" + username + "$", "i") },
+    email: { $regex: new RegExp("^" + email + "$", "i") },
   });
 };
 
-const userSignup = async ({ username, password, firstname }) => {
+const userRegister = async ({ username, password, firstName,lastName,email, avatar }) => {
   const hash = bcrypt.hashSync(password, 10);
 
   const newUser = new User({
     username,
-    firstname,
+    firstName,
+    lastName,
+    email,
     password: hash,
     token: uid2(32),
+    avatar,
   });
 
   return await newUser.save();
@@ -27,4 +30,4 @@ const checkToken = async (token) => {
   return !!user;
 };
 
-module.exports = { userSignup, checkToken, getUserByUsername };
+module.exports = { userRegister, checkToken, getUserByEmail };
