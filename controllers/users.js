@@ -1,18 +1,18 @@
-const { userSignup, getUserByUsername } = require("../repository/users");
+const { userRegister, getUserByEmail } = require("../repository/users");
 const { checkBody } = require("../utils/string");
 const bcrypt = require("bcrypt");
 
-const signup = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
-    if (!checkBody(req.body, ["username", "password", "firstname"])) {
+    if (!checkBody(req.body, ["username", "password","email","firstName","lastName"])) {
       return res.status(400).json({ error: "Missing or empty fields" });
     }
 
-    const user = await getUserByUsername(req.body.username.toLowerCase());
+    const user = await getUserByEmail(req.body.email.toLowerCase());
 
     if (user === null) {
-      const { token, username, firstname, _id } = await userSignup(req.body);
-      res.json({ token, username, firstname, _id });
+      const userObject = await userRegister(req.body);
+      res.json(userObject);
     } else {
       res.status(409).json({ error: "User already exists" });
     }
@@ -22,21 +22,17 @@ const signup = async (req, res, next) => {
   }
 };
 
-const signin = async (req, res, next) => {
+const login = async (req, res, next) => {
   try {
-    if (!checkBody(req.body, ["username", "password"])) {
+    if (!checkBody(req.body, ["email", "password"])) {
       return res.status(400).json({ error: "Missing or empty fields" });
     }
-
-    const user = await getUserByUsername(req.body.username.toLowerCase());
+console.log(req.body.email)
+    const user = await getUserByEmail(req.body.email.toLowerCase());
+    console.log(user)
 
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
-      res.json({
-        token: user.token,
-        _id: user._id,
-        username: user.username,
-        firstname: user.firstname,
-      });
+      res.json(user);
     } else {
       res.json.status(401).json({ error: "User not found or wrong password" });
     }
@@ -46,4 +42,4 @@ const signin = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, signin };
+module.exports = { register, login };
