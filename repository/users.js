@@ -42,4 +42,6 @@ const checkToken = async (token) => {
   return !!user;
 };
 
-module.exports = { userRegister, checkToken, getUserByEmail };
+const getUsers = async (params) => await User.find(params);
+
+module.exports = { userRegister, checkToken, getUserByEmail, getUsers };

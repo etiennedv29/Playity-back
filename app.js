@@ -6,9 +6,9 @@ require("dotenv").config();
 require("./models/connection");
 const cors = require("cors");
 
-
 var usersRouter = require("./routes/users");
-
+var lobbiesRouter = require("./routes/lobbies");
+var gamesRouter = require("./routes/games");
 
 var app = express();
 
@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-
 app.use("/users", usersRouter);
-
+app.use("/lobbies", lobbiesRouter);
+app.use("/games", gamesRouter);
 
 module.exports = app;

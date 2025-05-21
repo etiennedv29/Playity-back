@@ -11,7 +11,11 @@ const lobbiesSchema = mongoose.Schema({
     ref: "users",
   },
   nbPlayers: {
-    type: number,
+    type: Number,
+    required: true,
+  },
+  code: {
+    type: String,
     required: true,
   },
   parts: {
