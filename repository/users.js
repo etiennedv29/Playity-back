@@ -18,7 +18,7 @@ const userRegister = async ({
   connectionWithSocials,
 }) => {
   let hash = "";
-  if (connectionWithSocials === true) {
+  if (connectionWithSocials === false) {
     hash = bcrypt.hashSync(password, 10);
   }
 
