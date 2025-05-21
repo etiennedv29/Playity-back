@@ -3,8 +3,10 @@ const { checkBody } = require("../utils/string");
 const bcrypt = require("bcrypt");
 
 const register = async (req, res, next) => {
+  console.log(req.body);
   try {
     if (
+      !req.body.connectionWithSocials &&
       !checkBody(req.body, [
         "username",
         "password",
@@ -36,18 +38,28 @@ const register = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
+  console.log(req.body);
   try {
-    if (!checkBody(req.body, ["email", "password"])) {
+    if (
+      !req.body.connectionWithSocials &&
+      !checkBody(req.body, ["email", "password"])
+    ) {
       return res.status(400).json({ error: "Missing or empty fields" });
     }
-    console.log(req.body.email);
-    const user = await getUserByEmail(req.body.email.toLowerCase());
-    console.log(user);
 
-    if (user && bcrypt.compareSync(req.body.password, user.password)) {
+    const user = await getUserByEmail(req.body.email.toLowerCase());
+    console.log("user found at login=", user);
+
+    if (
+      user &&
+      !user.connectionWithSocials === false &&
+      bcrypt.compareSync(req.body.password, user.password)
+    ) {
+      res.json(user);
+    } else if (user && user.connectionWithSocials === true) {
       res.json(user);
     } else {
-      res.json.status(401).json({ error: "User not found or wrong password" });
+      res.status(401).json({ error: "User not found or wrong password" });
     }
   } catch (exception) {
     console.log(exception);

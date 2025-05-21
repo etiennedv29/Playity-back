@@ -39,6 +39,9 @@ const usersSchema = mongoose.Schema({
   dateOfBirth: { type: Date },
   password: {
     type: String,
+  },
+  connectionWithSocials: {
+    type: Boolean,
     required: true,
   },
   token: {
