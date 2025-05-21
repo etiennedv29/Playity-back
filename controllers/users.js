@@ -52,7 +52,7 @@ const login = async (req, res, next) => {
 
     if (
       user &&
-      !user.connectionWithSocials === false &&
+      user.connectionWithSocials === false &&
       bcrypt.compareSync(req.body.password, user.password)
     ) {
       res.json(user);
