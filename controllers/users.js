@@ -67,4 +67,15 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login };
+const findUserByEmail = async (req, res, next) => {
+  console.log("get user by email=", req.params.email);
+  try {
+    const user = await getUserByEmail(req.params.email);
+    res.json(user);
+  } catch (exception) {
+    console.log(exception);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { register, login, findUserByEmail };
