@@ -3,9 +3,9 @@ const { getGames: getGamesDB } = require("../repository/games");
 
 const getGames = async (req, res, next) => {
   try {
-    const lobby = await getGamesDB({ ...req.params });
+    const games = await getGamesDB({ ...req.params });
 
-    res.json({ ...lobby });
+    res.json(games);
   } catch (exception) {
     console.log(exception);
     res.status(500).json({ error: "Internal Server Error" });
