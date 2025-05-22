@@ -21,10 +21,6 @@ const gamesSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
   },
-  // gamePartDetails: {
-  //   type: boolean,
-  //   required: true,
-  // },
   tutorial: {
     type: [],
     required: true,
