@@ -31,6 +31,7 @@ const userRegister = async ({
     token: uid2(32),
     avatar,
     connectionWithSocials,
+    roles:['guest','member']
   });
 
   return await newUser.save();
