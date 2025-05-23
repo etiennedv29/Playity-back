@@ -31,7 +31,7 @@ const userRegister = async ({
     token: uid2(32),
     avatar,
     connectionWithSocials,
-    roles:['guest','member']
+    roles: ["guest", "member"],
   });
 
   return await newUser.save();
@@ -43,6 +43,26 @@ const checkToken = async (token) => {
   return !!user;
 };
 
+const guestRegister = async ({ username, avatar }) => {
+  let hash = "";
+
+  const newUser = new User({
+    username,
+    password: hash,
+    token: uid2(32),
+    avatar,
+    roles: ["guest"],
+  });
+
+  return await newUser.save();
+};
+
 const getUsers = async (params) => await User.find(params);
 
-module.exports = { userRegister, checkToken, getUserByEmail, getUsers };
+module.exports = {
+  userRegister,
+  checkToken,
+  getUserByEmail,
+  getUsers,
+  guestRegister,
+};
