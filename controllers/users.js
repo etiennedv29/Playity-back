@@ -1,6 +1,26 @@
 const { userRegister, getUserByEmail } = require("../repository/users");
+const { guestRegister } = require("../repository/users");
+
 const { checkBody } = require("../utils/string");
 const bcrypt = require("bcrypt");
+
+const registerGuest = async (req, res, next) => {
+  try {
+    //Generation aléatoire de userName
+    const username = "Guest" + Math.floor(Math.random() * 99999999) + 1;
+
+    //generation aléatoire de l'avatar
+    const seed = Math.random().toString(36).substring(2, 12);
+    const avatar = `https://api.dicebear.com/7.x/adventurer/png?seed=${seed}`;
+
+    //saving the user with its avatar generated
+    const userObject = await guestRegister({ avatar, username });
+    res.json(userObject);
+  } catch (exception) {
+    console.log(exception);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 const register = async (req, res, next) => {
   console.log(req.body);
@@ -78,4 +98,4 @@ const findUserByEmail = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, findUserByEmail };
+module.exports = { register, registerGuest, login, findUserByEmail };
