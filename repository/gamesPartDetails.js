@@ -1,78 +1,81 @@
 const PartDetails = require('../models/gamesPartDetails');
 const mongoose = require('mongoose')
 
-const getPlayersStats = (arr) => {
+const getPlayerStats = (e) => {
 
-    let playersStats = [];
+    console.log('élément transmis à getPlayerStats : ', e);
+    const playerStat = {}
     const properties = {
         string: "",
         number: 0,
         objectid: null
     }
 
-    arr.forEach((e) => {
-        let playerStat = {}
-        if (e.options.includes("required") && e.propertyType.toLowerCase() === "objectid") {
-            playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-            console.log('propriétés du joueur : ', playerStat);
-        } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "number") {
-            playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-            console.log('propriétés du joueur : ', playerStat);
-        } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "string") {
-            playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-            console.log('propriétés du joueur : ', playerStat);
-        }
-        playersStats.push(playerStat);
-    })
-    console.log('stats du joueur : ', playersStats);
-    return playersStats;
+    if (e.options.includes("required") && e.propertyType.toLowerCase() === "objectid") {
+        playerStat[e.property] = properties[e.propertyType.toLowerCase()];
+        console.log('type objet trouvé');
+    } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "number") {
+        playerStat[e.property] = properties[e.propertyType.toLowerCase()];
+        console.log('type number trouvé');
+    } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "string") {
+        playerStat[e.property] = properties[e.propertyType.toLowerCase()];
+        console.log('type string trouvé');
+    }
+
+    return playerStat;
 }
 
-/* Fonction qui vient récupérer les types de statitique pour un jeu donné :
 
-        1. On lui donne l'Id du jeu en entrée
-        2. Nous récupérons un objet avec pour propriété 
-        chaque type de stat, ainsi que son initialisation en fonction du type indiqué
-        3. On injectera ensuite cet objet dans la propriété gameStatistics
 
-        Exemple de paramètre d'entrée : "245425d11452ds154cd"
+//         3. On injectera ensuite cet objet dans la propriété gameStatistics
 
-        Exemple de sortie : 
-        {
-        propriété1: 0, (type number)
-        propréiété2 : "", (type string)
-        propriété3 : 0, (type number)
-        }
-*/
+//         Exemple de paramètre d'entrée : "245425d11452ds154cd"
 
-const getGamePartDetail = async (gameId) => {
+//         Exemple de sortie : 
+//         {
+//         propriété1: 0, (type number)
+//         propréiété2 : "", (type string)
+//         propriété3 : 0, (type number)
+//         }
+// 
 
+// Fonction qui vient récupérer les types de statitique pour un jeu donné :
+//   1. On lui donne l'Id du jeu en entrée
+const getGamePartDetail = async (gameId, maxPlayers) => {
+
+//   2. On initialise un objet de correspondance des propriétés
     let gameProperties = {};
+
     const properties = {
         string: "",
         number: 0,
     }
 
-    const all = await PartDetails.find({});
-    console.log("📋 Tous les gamePartDetails :");
-    all.forEach(doc => {
-    console.log("gameId in DB:", doc.gameId.toString(), "Type:", typeof doc.gameId);
-    });
-
-    console.log("🎯 gameId recherché:", gameId.toString(), "Type:", typeof gameId);
-    console.log("🔍 gameId ObjectId recherché:", new mongoose.Types.ObjectId(gameId).toString());
-
-    console.log(gameId);
+    console.log('Id de la game : ', gameId);
     const data = await PartDetails.findOne({gameId: new mongoose.Types.ObjectId(gameId)});
     console.log(data);
 
-    // if (!data) {
-    //     console.log('aucune stat de jeu trouvée')
-    //     return
-    // }
+    // Si l'id de la game n'est pas trouvé, on le signale dans la console
+    if (!data) {
+        console.log('aucune stat de jeu trouvée')
+        return
+    }
 
     const details = await data.details;
-    const playersStats = getPlayersStats(data.playersStats);
+    const allPlayersStats = [];
+    
+    for (let i = 1; i <= maxPlayers; i++) {
+        console.log(`On traite le player ${i}`)
+        let playerStats = {};
+        data.playersStats.forEach((e) => {
+            
+            playerStats = {...playerStats, ...getPlayerStats(e)}
+        })
+        playerStats.player = i;
+
+        console.log(`Objet stats du player ${i} : ${{...playerStats}}`)
+        allPlayersStats.push(playerStats);
+    }
 
     details.forEach((e) => {
         if (e.options.includes("required") && e.propertyType.toLowerCase() === "string") {
@@ -82,9 +85,8 @@ const getGamePartDetail = async (gameId) => {
         }
     });
 
-    gameProperties.playersStats = playersStats;
+    gameProperties.playersStats = allPlayersStats;
     
-    console.log(gameProperties);
     return gameProperties;
 }
 
