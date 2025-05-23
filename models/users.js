@@ -22,11 +22,9 @@ const achievementsSchema = new mongoose.Schema({
 const usersSchema = mongoose.Schema({
   firstName: {
     type: String,
-    required: true,
   },
   lastName: {
     type: String,
-    required: true,
   },
   username: {
     type: String,
@@ -34,7 +32,6 @@ const usersSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
   },
   dateOfBirth: { type: Date },
   password: {
@@ -42,7 +39,6 @@ const usersSchema = mongoose.Schema({
   },
   connectionWithSocials: {
     type: Boolean,
-    required: true,
   },
   token: {
     type: String,
