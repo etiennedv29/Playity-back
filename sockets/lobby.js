@@ -20,6 +20,7 @@ const getNbSpotLeft = (lobby, userId) => {
 };
 
 module.exports = function register(io, socket) {
+
   socket.on("joinLobby", async ({ code, userId }, callback) => {
     const lobby = await getLobbyByCode(code);
 

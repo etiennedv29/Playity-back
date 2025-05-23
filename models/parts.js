@@ -1,22 +1,17 @@
 const mongoose = require("mongoose");
+const { Types } = require("mongoose");
 
 const partsSchema = mongoose.Schema({
-  admin: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+  game: 
+    { type: [Types.ObjectId], ref: "games", default: [] }
+  ,
+  lobby: { type: [Types.ObjectId], ref: "lobbies", default: [] },,
+  status: {
+    type: string,
     required: true,
   },
-  players: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "users",
-  },
-  nbPlayers: {
-    type: number,
-    required: true,
-  },
-  parts: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "parts",
+  partStatistics: {
+    type:[]
   },
 });
 
