@@ -1,24 +1,33 @@
 const mongoose = require("mongoose");
 
 const partsSchema = mongoose.Schema({
-  admin: {
+  game: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+    ref: "games",
     required: true,
   },
-  players: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "users",
-  },
-  nbPlayers: {
-    type: number,
+  lobby: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "lobbies",
     required: true,
   },
-  parts: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "parts",
+  status: {
+    type: [String],
+    default: [],
   },
+
+  gamePartDetails: { type: mongoose.Schema.Types.Mixed },
 });
+
+// const parts = {
+//   game: "fheofhozeh",
+//   lobby: "hfohfoezhf",
+//   status: "ongoing",
+//   partStatistics: {
+//     completedLines: 0,
+//     teamScore: null
+//   }
+// }
 
 const partsModel = mongoose.model("parts", partsSchema);
 
