@@ -3,21 +3,18 @@ const { getLobbyByCode } = require('../repository/lobbies');
 const { getGamePartDetail } = require('../repository/gamesPartDetails');
 
 const createPartController = async (req, res, next) => {
+    console.log('body:', req.body);
     try {
+    
 
-    console.log('gameId:', req.body.gameId);
-    console.log('lobbyCode:', req.body.lobbyCode);
+    // const lobby = await getLobbyByCode(req.body.lobbyCode);
 
-    const lobby = await getLobbyByCode(req.body.lobbyCode);
+    // if (!lobby) {
+    //   console.error('Lobby not found for code:', req.lobbyCode);
+    //   return res.status(404).json({ error: 'Lobby not found' });
+    // }
 
-    if (!lobby) {
-      console.error('Lobby not found for code:', req.lobbyCode);
-      return res.status(404).json({ error: 'Lobby not found' });
-    }
-
-    const lobbyId = lobby._id;
-    console.log('Id du lobby : ', lobbyId)
-    const gamePartDetails = await getGamePartDetail(req.body.gameId);
+    const gamePartDetails = await getGamePartDetail(req.body.gameId, req.body.maxPlayers);
 
     if (!gamePartDetails) {
         res.json({ error: "No game details found"})
@@ -25,14 +22,14 @@ const createPartController = async (req, res, next) => {
 
     const part = {
         game: req.body.gameId,
-        lobby: lobbyId,
+        lobby: req.body.lobbyId,
         status: "ongoing",
-        gamePartDetails: {...gamePartDetails }
+        gamePartDetails: { ...gamePartDetails }
     };
 
-    await createPart(part);
+    const newPart = await createPart(part);
 
-    res.json({ partId: part._id });
+    res.json({ partId: newPart._id });
 
     } catch (exception) {
     console.log(exception);
