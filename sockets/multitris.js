@@ -34,27 +34,28 @@ function spawnPiece(io, socket) {
     //générer random la pièce qui va tomber
     let piecesType = Object.keys(TETROMINOES);
     let randomPieceIndex = Math.floor(Math.random() * piecesType.length);
-    let randomPiece = TETROMINOES[piecesType[randomPieceIndex]];
+    let randomPieceShape = TETROMINOES[piecesType[randomPieceIndex]];
 
-    //colonne de la case en haut à gauche de la pièce qui va tomber (en récupérant la largeur de la pièce : randomPiece[0])
+    //colonne de la case en haut à gauche de la pièce qui va tomber (en récupérant la largeur de la pièce : randomPieceShape[0])
     let newPieceStartCol = Math.floor(
       currentPlayerIndex * COLS_PER_PLAYER +
-        (COLS_PER_PLAYER - randomPiece[0].length) / 2
+        (COLS_PER_PLAYER - randomPieceShape[0].length) / 2
     );
 
     //pièce à envoyer à tout le monde
     let spawnedPiece = {
       playerIndex: currentPlayerIndex,
-      receivedPiece: randomPiece,
-      pieceRow: 0,
-      pieceCol: newPieceStartCol,
+      newShape: randomPieceShape,
+      newRow: 0,
+      newCol: newPieceStartCol,
     };
+    let oldPiece={oldShape:[], oldRow:"", oldCol:""}
 
-    console.log({ currentPlayerIndex, spawnedPiece });
+    // console.log({ currentPlayerIndex, spawnedPiece });
 
     //envoi à tout le monde dans le lobby
 
-    io.to(code).emit("receive_piece", spawnedPiece);
+    io.to(code).emit("receive_piece", [oldPiece,spawnedPiece]);
   });
 }
 
@@ -76,3 +77,31 @@ function currentGameScores(io, socket) {
 }
 
 module.exports = { gameStart, spawnPiece, currentGameScores };
+
+function communicateMovingPieces(io, socket) {
+  socket.on(
+    "move_piece",
+    ([
+      { oldShape, oldRow, oldCol },
+      { playerIndex, newShape, newRow, newCol, code },
+    ]) => {
+      console.log("old Piece Received in back ", {
+        oldShape,
+        oldRow,
+        oldCol,
+      });
+      console.log("new Piece received in back", {
+        playerIndex,
+        newShape,
+        newRow,
+        newCol,
+        code,
+      });
+      let oldPiece = { oldShape, oldRow, oldCol };
+      let newPiece = { playerIndex, newShape, newRow, newCol };
+      socket.to(code).emit("receive_piece", [oldPiece,newPiece]);
+    }
+  );
+}
+
+module.exports = { gameStart, spawnPiece, communicateMovingPieces };
