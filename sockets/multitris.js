@@ -92,4 +92,37 @@ function communicateMovingPieces(io, socket) {
   );
 }
 
-module.exports = { gameStart, spawnPiece, communicateMovingPieces };
+function updateScores(io, socket) {
+
+  let playersStats = [];
+
+  socket.on("player_score", ({ code, playerId, completedLines, piecesPlaced }) => {
+  
+  const scoreMap = { 1: 100, 2: 300, 3: 500, 4: 800 };
+  const currentPlayer = playersStats.find((e) => e.player === playerId);
+
+  if (!currentPlayer) {
+    playersStats.push({
+      player: playerId,
+      completedLines: completedLines,
+      score: 0
+    })
+  }
+
+  let playerPoints = scoreMap[completedLines];
+ 
+  currentPlayer.score += playerPoints;
+  
+  });
+
+
+  socket.on("game_scores", (partScores) => {
+    let teamScore= teamScore;
+    let teamLines = teamLines;
+    let numberOfPieces = ;
+
+    io.to(code)
+  })
+}
+
+module.exports = { gameStart, spawnPiece, communicateMovingPieces, updateScores };
