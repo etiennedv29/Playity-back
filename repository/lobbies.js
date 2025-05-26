@@ -28,9 +28,19 @@ const getLobbyByCode = async (code) => {
   return Lobby.findOne({ code }).populate("players");
 };
 
+const getPlayersByLobbyId = async (lobbyId) => {
+  let players = [];
+  const data = await Lobby.findOne({_id: lobbyId});
+  data.players.forEach((e) => {
+    players.push(e);
+  })
+  return players;
+}
+
 module.exports = {
   createLobby,
   addPlayerToLobby,
   removePlayerToLobby,
   getLobbyByCode,
+  getPlayersByLobbyId,
 };
