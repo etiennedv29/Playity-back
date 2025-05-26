@@ -1,6 +1,7 @@
 const registerLobbyHandlers = require("./lobby");
 const {spawnPiece} = require("./multitris");
 const {gameStart} = require("./multitris");
+const {communicateMovingPieces}= require("./multitris")
 const User = require("../models/users");
 
 module.exports = function registerSocketHandlers(io) {
@@ -14,5 +15,6 @@ module.exports = function registerSocketHandlers(io) {
     registerLobbyHandlers(io, socket);
     spawnPiece(io, socket);
     gameStart(io, socket);
+    communicateMovingPieces(io,socket)
   });
 };
