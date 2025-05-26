@@ -65,4 +65,14 @@ function gameStart(io, socket) {
   });
 }
 
-module.exports = { gameStart, spawnPiece };
+function currentGameScores(io, socket) {
+  socket.on("playerScore", ({code, score, player}) => {
+  let newScore = {
+    score: score,
+    player: player,
+  }
+  io.to(code).emit("gameScores", newScore)
+  })
+}
+
+module.exports = { gameStart, spawnPiece, currentGameScores };

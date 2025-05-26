@@ -1,5 +1,5 @@
 const PartDetails = require('../models/gamesPartDetails');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const getPlayerStats = (e) => {
 
@@ -25,8 +25,6 @@ const getPlayerStats = (e) => {
     return playerStat;
 }
 
-
-
 //         3. On injectera ensuite cet objet dans la propriété gameStatistics
 
 //         Exemple de paramètre d'entrée : "245425d11452ds154cd"
@@ -41,7 +39,7 @@ const getPlayerStats = (e) => {
 
 // Fonction qui vient récupérer les types de statitique pour un jeu donné :
 //   1. On lui donne l'Id du jeu en entrée
-const getGamePartDetail = async (gameId, maxPlayers) => {
+const getGamePartDetail = async (gameId, players) => {
 
 //   2. On initialise un objet de correspondance des propriétés
     let gameProperties = {};
@@ -64,14 +62,14 @@ const getGamePartDetail = async (gameId, maxPlayers) => {
     const details = await data.details;
     const allPlayersStats = [];
     
-    for (let i = 1; i <= maxPlayers; i++) {
+    for (let i = 0; i < players.length; i++) {
         console.log(`On traite le player ${i}`)
         let playerStats = {};
         data.playersStats.forEach((e) => {
             
             playerStats = {...playerStats, ...getPlayerStats(e)}
         })
-        playerStats.player = i;
+        playerStats.player = players[i];
 
         console.log(`Objet stats du player ${i} : ${{...playerStats}}`)
         allPlayersStats.push(playerStats);
@@ -85,6 +83,7 @@ const getGamePartDetail = async (gameId, maxPlayers) => {
         }
     });
 
+    
     gameProperties.playersStats = allPlayersStats;
     
     return gameProperties;

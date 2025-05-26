@@ -1,20 +1,13 @@
 const { createPart } = require('../repository/parts');
-const { getLobbyByCode } = require('../repository/lobbies');
+const { getPlayersByLobbyId } = require('../repository/lobbies');
 const { getGamePartDetail } = require('../repository/gamesPartDetails');
 
 const createPartController = async (req, res, next) => {
     console.log('body:', req.body);
     try {
     
-
-    // const lobby = await getLobbyByCode(req.body.lobbyCode);
-
-    // if (!lobby) {
-    //   console.error('Lobby not found for code:', req.lobbyCode);
-    //   return res.status(404).json({ error: 'Lobby not found' });
-    // }
-
-    const gamePartDetails = await getGamePartDetail(req.body.gameId, req.body.maxPlayers);
+    const players = await getPlayersByLobbyId(req.body.lobbyId);
+    const gamePartDetails = await getGamePartDetail(req.body.gameId, players);
 
     if (!gamePartDetails) {
         res.json({ error: "No game details found"})
@@ -37,4 +30,8 @@ const createPartController = async (req, res, next) => {
     }
 }
 
-module.exports = { createPartController }
+const endPartController = async (req, res, next) => {
+
+}
+
+module.exports = { createPartController, endPartController }
