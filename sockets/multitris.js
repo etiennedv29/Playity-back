@@ -130,7 +130,7 @@ function updateScores(io, socket) {
   // On met à jour les stats de la partie et du joueur
   currentPlayer.completedLines += completedLines;
   currentPlayer.score += playerPoints;
-  gamePartDetails += completedLines;
+  gamePartDetails.completedLines += completedLines;
   gamePartDetails.numberOfPieces += piecesPlaced;
 
   // On renvoie le tout dans l'événement part_scores
