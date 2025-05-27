@@ -68,7 +68,7 @@ function gameStart(io, socket) {
   });
 }
 
-module.exports = { gameStart, spawnPiece, currentGameScores };
+module.exports = { gameStart, spawnPiece };
 
 function communicateMovingPieces(io, socket) {
   socket.on(
