@@ -27,6 +27,8 @@ const TETROMINOES = {
   ],
 };
 
+const games = new Map();
+
 function spawnPiece(io, socket) {
   socket.on("spawn_piece", ({ currentPlayerIndex, code }) => {
     // console.log({ currentPlayerIndex }, { code });
@@ -66,16 +68,6 @@ function gameStart(io, socket) {
   });
 }
 
-function currentGameScores(io, socket) {
-  socket.on("playerScore", ({code, score, player}) => {
-  let newScore = {
-    score: score,
-    player: player,
-  }
-  io.to(code).emit("gameScores", newScore)
-  })
-}
-
 module.exports = { gameStart, spawnPiece, currentGameScores };
 
 function communicateMovingPieces(io, socket) {
@@ -106,35 +98,46 @@ function communicateMovingPieces(io, socket) {
 
 function updateScores(io, socket) {
 
-  let playersStats = [];
+  socket.on("part_scores", ({ code, playerId, completedLines, piecesPlaced }) => {
 
-  socket.on("player_score", ({ code, playerId, completedLines, piecesPlaced }) => {
-  
-  const scoreMap = { 1: 100, 2: 300, 3: 500, 4: 800 };
-  const currentPlayer = playersStats.find((e) => e.player === playerId);
-
-  if (!currentPlayer) {
-    playersStats.push({
-      player: playerId,
-      completedLines: completedLines,
-      score: 0
-    })
+  // Si aucun tableau de scores n'est associé à ce code, on le créée
+  if (!games.has(code)) {
+    games.set(code, {
+      playersStats: [],
+      numberOfPieces: 0,
+      completedLines: 0,
+      teamScore: 0
+    });
   }
 
-  let playerPoints = scoreMap[completedLines];
- 
-  currentPlayer.score += playerPoints;
+  const gamePartDetails = games.get(code);
   
+  const scoreTab = { 1: 100, 2: 300, 3: 500, 4: 800 };
+  let playerPoints = scoreTab[completedLines] || 0;
+
+  // On vérifie si le joueur existe déjà dans les gamePartDetails
+  let currentPlayer = gamePartDetails.playersStats.find((e) => e.player === playerId);
+
+  if (!currentPlayer) {
+    currentPlayer = {
+      player: playerId,
+      completedLines: 0,
+      score: 0
+    };
+    gamePartDetails.playersStats.push(currentPlayer);
+  }
+
+  // On met à jour les stats de la partie et du joueur
+  currentPlayer.completedLines += completedLines;
+  currentPlayer.score += playerPoints;
+  gamePartDetails += completedLines;
+  gamePartDetails.numberOfPieces += piecesPlaced;
+
+  // On renvoie le tout dans l'événement part_scores
+  io.to(code).emit("part_scores", gamePartDetails);
+
   });
 
-
-  socket.on("game_scores", (partScores) => {
-    let teamScore= teamScore;
-    let teamLines = teamLines;
-    let numberOfPieces = ;
-
-    io.to(code)
-  })
 }
 
 module.exports = { gameStart, spawnPiece, communicateMovingPieces, updateScores };
