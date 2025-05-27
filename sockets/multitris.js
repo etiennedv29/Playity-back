@@ -27,6 +27,8 @@ const TETROMINOES = {
   ],
 };
 
+const games = new Map();
+
 function spawnPiece(io, socket) {
   socket.on("spawn_piece", ({ currentPlayerIndex, code }) => {
     // console.log({ currentPlayerIndex }, { code });
@@ -66,17 +68,7 @@ function gameStart(io, socket) {
   });
 }
 
-function currentGameScores(io, socket) {
-  socket.on("playerScore", ({code, score, player}) => {
-  let newScore = {
-    score: score,
-    player: player,
-  }
-  io.to(code).emit("gameScores", newScore)
-  })
-}
-
-module.exports = { gameStart, spawnPiece, currentGameScores };
+module.exports = { gameStart, spawnPiece };
 
 function communicateMovingPieces(io, socket) {
   socket.on(
@@ -104,4 +96,48 @@ function communicateMovingPieces(io, socket) {
   );
 }
 
-module.exports = { gameStart, spawnPiece, communicateMovingPieces };
+function updateScores(io, socket) {
+
+  socket.on("part_scores", ({ code, playerId, completedLines, piecesPlaced }) => {
+
+  // Si aucun tableau de scores n'est associé à ce code, on le créée
+  if (!games.has(code)) {
+    games.set(code, {
+      playersStats: [],
+      numberOfPieces: 0,
+      completedLines: 0,
+      teamScore: 0
+    });
+  }
+
+  const gamePartDetails = games.get(code);
+  
+  const scoreTab = { 1: 100, 2: 300, 3: 500, 4: 800 };
+  let playerPoints = scoreTab[completedLines] || 0;
+
+  // On vérifie si le joueur existe déjà dans les gamePartDetails
+  let currentPlayer = gamePartDetails.playersStats.find((e) => e.player === playerId);
+
+  if (!currentPlayer) {
+    currentPlayer = {
+      player: playerId,
+      completedLines: 0,
+      score: 0
+    };
+    gamePartDetails.playersStats.push(currentPlayer);
+  }
+
+  // On met à jour les stats de la partie et du joueur
+  currentPlayer.completedLines += completedLines;
+  currentPlayer.score += playerPoints;
+  gamePartDetails += completedLines;
+  gamePartDetails.numberOfPieces += piecesPlaced;
+
+  // On renvoie le tout dans l'événement part_scores
+  io.to(code).emit("part_scores", gamePartDetails);
+
+  });
+
+}
+
+module.exports = { gameStart, spawnPiece, communicateMovingPieces, updateScores };
