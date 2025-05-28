@@ -63,7 +63,6 @@ const getGamePartDetail = async (gameId, players) => {
     let playerStats = {};
 
     for (let i = 0; i < players.length; i++) {
-        console.log(`On traite le player ${i}`)
         
         data.playersStats.forEach((e) => {
             

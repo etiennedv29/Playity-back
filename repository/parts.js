@@ -33,7 +33,7 @@ const savePartPlayersStats = async (partId, playerId, score, completedLines) => 
 }
 
 const savePartStats = async (partId, teamScore, completedLines, numberOfPieces ) => {
-        const data = Part.updateOne(
+        const data = await Part.updateOne(
             {_id: partId},
             {
                 $set: {
@@ -48,4 +48,11 @@ const savePartStats = async (partId, teamScore, completedLines, numberOfPieces )
         }
 }
 
-module.exports = { createPart, savePartPlayersStats, savePartStats }
+const changePartStatus = async (partId) => {
+    const data = await Part.findOneAndUpdate(
+        {_id: partId},
+        {status: "finished"}
+    )
+}
+
+module.exports = { createPart, savePartPlayersStats, savePartStats, changePartStatus }

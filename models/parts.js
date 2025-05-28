@@ -13,8 +13,8 @@ const partsSchema = mongoose.Schema({
     required: true,
   },
   status: {
-    type: [String],
-    default: [],
+    type: String,
+    default: "",
   },
 
   gamePartDetails: { type: mongoose.Schema.Types.Mixed },
