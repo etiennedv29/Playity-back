@@ -139,4 +139,10 @@ function updateScores(io, socket) {
 
 }
 
+function endGame(io, socket) {
+  socket.on("end_game", ({code}) => {
+    
+  })
+}
+
 module.exports = { gameStart, spawnPiece, communicateMovingPieces, updateScores };
