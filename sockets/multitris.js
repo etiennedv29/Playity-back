@@ -97,45 +97,45 @@ function communicateMovingPieces(io, socket) {
 
 function updateScores(io, socket) {
 
-  socket.on("part_scores", ({ code, playerId, completedLines, piecesPlaced }) => {
+  // socket.on("part_scores", ({ code, playerId, completedLines, piecesPlaced }) => {
 
-  // Si aucun tableau de scores n'est associé à ce code, on le créée
-  if (!games.has(code)) {
-    games.set(code, {
-      playersStats: [],
-      numberOfPieces: 0,
-      completedLines: 0,
-      teamScore: 0
-    });
-  }
+  // // Si aucun tableau de scores n'est associé à ce code, on le créée
+  // if (!games.has(code)) {
+  //   games.set(code, {
+  //     playersStats: [],
+  //     numberOfPieces: 0,
+  //     completedLines: 0,
+  //     teamScore: 0
+  //   });
+  // }
 
-  const gamePartDetails = games.get(code);
+  // const gamePartDetails = games.get(code);
   
-  const scoreTab = { 1: 100, 2: 300, 3: 500, 4: 800 };
-  let playerPoints = scoreTab[completedLines] || 0;
+  // const scoreTab = { 1: 100, 2: 300, 3: 500, 4: 800 };
+  // let playerPoints = scoreTab[completedLines] || 0;
 
-  // On vérifie si le joueur existe déjà dans les gamePartDetails
-  let currentPlayer = gamePartDetails.playersStats.find((e) => e.player === playerId);
+  // // On vérifie si le joueur existe déjà dans les gamePartDetails
+  // let currentPlayer = gamePartDetails.playersStats.find((e) => e.player === playerId);
 
-  if (!currentPlayer) {
-    currentPlayer = {
-      player: playerId,
-      completedLines: 0,
-      score: 0
-    };
-    gamePartDetails.playersStats.push(currentPlayer);
-  }
+  // if (!currentPlayer) {
+  //   currentPlayer = {
+  //     player: playerId,
+  //     completedLines: 0,
+  //     score: 0
+  //   };
+  //   gamePartDetails.playersStats.push(currentPlayer);
+  // }
 
-  // On met à jour les stats de la partie et du joueur
-  currentPlayer.completedLines += completedLines;
-  currentPlayer.score += playerPoints;
-  gamePartDetails.completedLines += completedLines;
-  gamePartDetails.numberOfPieces += piecesPlaced;
+  // // On met à jour les stats de la partie et du joueur
+  // currentPlayer.completedLines += completedLines;
+  // currentPlayer.score += playerPoints;
+  // gamePartDetails.completedLines += completedLines;
+  // gamePartDetails.numberOfPieces += piecesPlaced;
 
-  // On renvoie le tout dans l'événement part_scores
-  io.to(code).emit("part_scores", gamePartDetails);
+  // // On renvoie le tout dans l'événement part_scores
+  // io.to(code).emit("part_scores", gamePartDetails);
 
-  });
+  // });
 
 }
 
@@ -145,4 +145,4 @@ function endGame(io, socket) {
   })
 }
 
-module.exports = { gameStart, spawnPiece, communicateMovingPieces, updateScores };
+module.exports = { gameStart, spawnPiece, communicateMovingPieces, updateScores,endGame };
