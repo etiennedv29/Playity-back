@@ -53,18 +53,18 @@ function spawnPiece(io, socket) {
       newRow: 0,
       newCol: newPieceStartCol,
     };
-    let oldPiece={oldShape:[], oldRow:"", oldCol:""}
+    let oldPiece = { oldShape: [], oldRow: "", oldCol: "" };
 
     //envoi à tout le monde dans le lobby
 
-    io.to(code).emit("receive_piece", [oldPiece,spawnedPiece]);
+    io.to(code).emit("receive_piece", [oldPiece, spawnedPiece]);
   });
 }
 
 function gameStart(io, socket) {
-  socket.on("gameStart", ({ code, startedBy }) => {
-    console.log("gameStarted by admin côté back")
-    let gameStarted = { gameStartInfo: true, startedBy };
+  socket.on("gameStart", ({ code, startedBy, partId }) => {
+    console.log("gameStarted by admin côté back");
+    let gameStarted = { gameStartInfo: true, startedBy, partId };
     io.to(code).emit("gameStartedNow", gameStarted);
   });
 }
@@ -92,62 +92,65 @@ function communicateMovingPieces(io, socket) {
       });
       let oldPiece = { oldShape, oldRow, oldCol };
       let newPiece = { playerIndex, newShape, newRow, newCol };
-      socket.to(code).emit("receive_piece", [oldPiece,newPiece]);
+      socket.to(code).emit("receive_piece", [oldPiece, newPiece]);
     }
   );
 }
 
 function updateScores(io, socket) {
+  socket.on(
+    "player_scores",
+    ({ code, playerId, completedLines, piecesSpawned }) => {
+      // Si aucun tableau de scores n'est associé à ce code, on le créée
+      if (!games.has(code)) {
+        games.set(code, {
+          playersStats: [],
+          numberOfPieces: 0,
+          completedLines: 0,
+          teamScore: 0,
+        });
+      }
+      const gamePartDetails = games.get(code);
 
-  // socket.on("part_scores", ({ code, playerId, completedLines, piecesPlaced }) => {
-
-  // // Si aucun tableau de scores n'est associé à ce code, on le créée
-  // if (!games.has(code)) {
-  //   games.set(code, {
-  //     playersStats: [],
-  //     numberOfPieces: 0,
-  //     completedLines: 0,
-  //     teamScore: 0
-  //   });
-  // }
-
-  // const gamePartDetails = games.get(code);
-  
-  // const scoreTab = { 1: 100, 2: 300, 3: 500, 4: 800 };
-  // let playerPoints = scoreTab[completedLines] || 0;
-
-  // // On vérifie si le joueur existe déjà dans les gamePartDetails
-  // let currentPlayer = gamePartDetails.playersStats.find((e) => e.player === playerId);
-
-  // if (!currentPlayer) {
-  //   currentPlayer = {
-  //     player: playerId,
-  //     completedLines: 0,
-  //     score: 0
-  //   };
-  //   gamePartDetails.playersStats.push(currentPlayer);
-  // }
-
-  // // On met à jour les stats de la partie et du joueur
-  // currentPlayer.completedLines += completedLines;
-  // currentPlayer.score += playerPoints;
-  // gamePartDetails.completedLines += completedLines;
-  // gamePartDetails.numberOfPieces += piecesPlaced;
-
-  // // On renvoie le tout dans l'événement part_scores
-  // io.to(code).emit("part_scores", gamePartDetails);
-
-  // });
-
+      const scoreTab = { 1: 100, 2: 300, 3: 500, 4: 800 };
+      let playerPoints = scoreTab[completedLines] || 0;
+      // On vérifie si le joueur existe déjà dans les gamePartDetails
+      let currentPlayer = gamePartDetails.playersStats.find(
+        (e) => e.player === playerId
+      );
+      if (!currentPlayer) {
+        currentPlayer = {
+          player: playerId,
+          completedLines: 0,
+          score: 0,
+        };
+        gamePartDetails.playersStats.push(currentPlayer);
+      }
+      // On met à jour les stats de la partie et du joueur
+      currentPlayer.completedLines += completedLines;
+      currentPlayer.score += playerPoints;
+      gamePartDetails.completedLines += completedLines;
+      gamePartDetails.numberOfPieces += piecesSpawned;
+      gamePartDetails.teamScore += playerPoints;
+      // On renvoie le tout dans l'événement part_scores
+      io.to(code).emit("part_scores", gamePartDetails);
+    }
+  );
 }
 
 function endGame(io, socket) {
-  socket.on("end_game", ({code}) => {
-    io.to(code).emit("end_game", ({code, partId}));
-    const gamePartDetails = games.get(code);
-    console.log(gamePartDetails);
+  socket.on("end_game", ({ code, partId }) => {
+    console.log("fin de partie bien émise par le looser");
+    io.to(code).emit("end_game", code);
+    const gamePartDetails = games.get(code);   
     endPartController(partId, gamePartDetails);
-  })
+  });
 }
 
-module.exports = { gameStart, spawnPiece, communicateMovingPieces, updateScores,endGame };
+module.exports = {
+  gameStart,
+  spawnPiece,
+  communicateMovingPieces,
+  updateScores,
+  endGame,
+};
