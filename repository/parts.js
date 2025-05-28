@@ -6,12 +6,46 @@ const createPart = async (part) => {
 }
 
 // Assigner à chaque playerStat de la partie l'Id d'un joueur du lobby
-const setPlayersIds = async (partId, arr) => {
-    const part = await PartDetails.findById({_id: partId})    
+// const setPlayersIds = async (partId, arr) => {
+//     const part = await PartDetails.findById({_id: partId})    
     
-    for (let i = 0; i < arr.length; i++) {
-        part.playersStats[i].player = arr[i];
+//     for (let i = 0; i < arr.length; i++) {
+//         part.playersStats[i].player = arr[i];
+//     }
+// }
+
+const savePartPlayersStats = async (partId, playerId, score, completedLines) => {
+    const data = await Part.updateOne(
+        {_id: partId},
+        {
+            $inc: {
+            "playersStats.$[elem].score": score,
+            "playersStats.$[elem].score": completedLines,
+            }
+        },
+        {
+            arrayFilters: [{ "elem.player": playerId }]
+        }
+    );
+    if (!data) {
+        return;
     }
 }
 
-module.exports = { createPart, setPlayersIds }
+const savePartStats = async (partId, teamScore, completedLines, numberOfPieces ) => {
+        const data = Part.updateOne(
+            {_id: partId},
+            {
+                $set: {
+                    teamScore: teamScore,
+                    completedLines: completedLines,
+                    numberOfPieces: numberOfPieces
+                }
+            }
+        )
+        if (!data) {
+            return;
+        }
+}
+
+module.exports = { createPart, savePartPlayersStats, savePartStats }
