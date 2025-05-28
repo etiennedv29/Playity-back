@@ -5,6 +5,6 @@ const { createPartController, endPartController } = require("../controllers/part
 
 router.post("/start", createPartController);
 
-router.post("/end", endPartController)
+router.put("/end", endPartController)
 
 module.exports = router;
