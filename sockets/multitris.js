@@ -1,3 +1,5 @@
+const { endPartController } = require("../controllers/parts");
+
 const COLS_PER_PLAYER = 10;
 const TETROMINOES = {
   I: [[1, 1, 1, 1]],
@@ -141,7 +143,10 @@ function updateScores(io, socket) {
 
 function endGame(io, socket) {
   socket.on("end_game", ({code}) => {
-    
+    io.to(code).emit("end_game", ({code, partId}));
+    const gamePartDetails = games.get(code);
+    console.log(gamePartDetails);
+    endPartController(partId, gamePartDetails);
   })
 }
 

@@ -1,7 +1,7 @@
 const { createPart } = require('../repository/parts');
 const { getPlayersByLobbyId } = require('../repository/lobbies');
 const { getGamePartDetail } = require('../repository/gamesPartDetails');
-const { savePartPlayersStats, savePartStats } = require('../repository/parts');
+const { savePartPlayersStats, savePartStats, changePartStatus } = require('../repository/parts');
 
 const createPartController = async (req, res, next) => {
     try {
@@ -30,13 +30,13 @@ const createPartController = async (req, res, next) => {
     }
 }
 
-const endPartController = async (req, res, next) => {
+const endPartController = async (partId, gamePartDetails) => {
     try {
         console.log('ending game...');
-
-        savePartStats(req.body.gamePartDetails.teamScore, req.body.gamePartDetails.completedLines);
-        for (let i = 0; i < req.body.gamePartDetails.playersStats.length; i++) {
-            savePartPlayersStats(req.body.partId, req.body.gamePartDetails);
+        changePartStatus(partId);
+        savePartStats(gamePartDetails.teamScore, gamePartDetails.completedLines);
+        for (let i = 0; i < gamePartDetails.playersStats.length; i++) {
+            savePartPlayersStats(partId, gamePartDetails);
         }
         
     } catch (exception) {
