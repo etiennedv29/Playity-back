@@ -4,7 +4,6 @@ const { getGamePartDetail } = require('../repository/gamesPartDetails');
 const { savePartPlayersStats, savePartStats } = require('../repository/parts');
 
 const createPartController = async (req, res, next) => {
-    console.log('body:', req.body);
     try {
     
     const players = await getPlayersByLobbyId(req.body.lobbyId);

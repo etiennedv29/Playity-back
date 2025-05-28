@@ -53,8 +53,6 @@ function spawnPiece(io, socket) {
     };
     let oldPiece={oldShape:[], oldRow:"", oldCol:""}
 
-    // console.log({ currentPlayerIndex, spawnedPiece });
-
     //envoi à tout le monde dans le lobby
 
     io.to(code).emit("receive_piece", [oldPiece,spawnedPiece]);
@@ -63,6 +61,7 @@ function spawnPiece(io, socket) {
 
 function gameStart(io, socket) {
   socket.on("gameStart", ({ code, startedBy }) => {
+    console.log("gameStarted by admin côté back")
     let gameStarted = { gameStartInfo: true, startedBy };
     io.to(code).emit("gameStartedNow", gameStarted);
   });

@@ -2,8 +2,7 @@ const PartDetails = require('../models/gamesPartDetails');
 const mongoose = require('mongoose');
 
 const getPlayerStats = (e) => {
-
-    console.log('élément transmis à getPlayerStats : ', e);
+    // console.log('élément transmis à getPlayerStats : ', e);
     const playerStat = {}
     const properties = {
         string: "",
@@ -72,7 +71,7 @@ const getGamePartDetail = async (gameId, players) => {
         })
         playerStats.player = players[i];
 
-        console.log(`Objet stats du player ${i} : ${{...playerStats}}`)
+        //console.log(`Objet stats du player ${i} : ${{...playerStats}}`)
         allPlayersStats.push(playerStats);
     }
 
