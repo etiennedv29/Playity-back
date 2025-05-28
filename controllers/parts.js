@@ -32,11 +32,12 @@ const createPartController = async (req, res, next) => {
 
 const endPartController = async (partId, gamePartDetails) => {
     try {
-        console.log('ending game...');
+        console.log('ending game...', {partId});
         changePartStatus(partId);
-        savePartStats(gamePartDetails.teamScore, gamePartDetails.completedLines);
+        savePartStats(partId,gamePartDetails.teamScore, gamePartDetails.completedLines,gamePartDetails.numberOfPieces);
         for (let i = 0; i < gamePartDetails.playersStats.length; i++) {
-            savePartPlayersStats(partId, gamePartDetails);
+            console.log("on est dans la boucle, player=> ",{i}, "playerId=", gamePartDetails.playersStats[i].player)
+            savePartPlayersStats(partId,gamePartDetails.playersStats[i].player,gamePartDetails.playersStats[i].score, gamePartDetails.playersStats[i].completedLines);
         }
         
     } catch (exception) {

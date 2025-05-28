@@ -1,30 +1,25 @@
 const Part = require('../models/parts');
+const { Types } = require("mongoose");
+const mongoose = require('mongoose');
 
 const createPart = async (part) => {
     const newPart = await new Part(part);
     return newPart.save();
 }
 
-// Assigner à chaque playerStat de la partie l'Id d'un joueur du lobby
-// const setPlayersIds = async (partId, arr) => {
-//     const part = await PartDetails.findById({_id: partId})    
-    
-//     for (let i = 0; i < arr.length; i++) {
-//         part.playersStats[i].player = arr[i];
-//     }
-// }
 
 const savePartPlayersStats = async (partId, playerId, score, completedLines) => {
-    const data = await Part.updateOne(
+    console.log("dans repo trying to update les joueurs, partID=>", partId)
+    const data = await Part.findOneAndUpdate(
         {_id: partId},
         {
-            $inc: {
-            "playersStats.$[elem].score": score,
-            "playersStats.$[elem].score": completedLines,
+            $set: {
+            "gamePartDetails.playersStats.$[elem].score": score,
+            "gamePartDetails.playersStats.$[elem].completedLines": completedLines,
             }
         },
         {
-            arrayFilters: [{ "elem.player": playerId }]
+            arrayFilters: [{ "elem.player": new mongoose.Types.ObjectId(playerId) }]
         }
     );
     if (!data) {
@@ -33,13 +28,13 @@ const savePartPlayersStats = async (partId, playerId, score, completedLines) => 
 }
 
 const savePartStats = async (partId, teamScore, completedLines, numberOfPieces ) => {
-        const data = await Part.updateOne(
+        const data = await Part.findOneAndUpdate(
             {_id: partId},
             {
                 $set: {
-                    teamScore: teamScore,
-                    completedLines: completedLines,
-                    numberOfPieces: numberOfPieces
+                    "gamePartDetails.teamScore": teamScore,
+                    "gamePartDetails.completedLines": completedLines,
+                   "gamePartDetails.numberOfPieces": numberOfPieces
                 }
             }
         )
