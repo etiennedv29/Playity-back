@@ -3,7 +3,6 @@ const { getPlayersByLobbyId } = require('../repository/lobbies');
 const { getGamePartDetail } = require('../repository/gamesPartDetails');
 
 const createPartController = async (req, res, next) => {
-    console.log('body:', req.body);
     try {
     
     const players = await getPlayersByLobbyId(req.body.lobbyId);
