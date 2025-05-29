@@ -32,9 +32,8 @@ const TETROMINOES = {
 const games = new Map();
 
 function spawnPiece(io, socket) {
-  
   socket.on("spawn_piece", ({ currentPlayerIndex, code }) => {
-    console.log("spawn requested")
+    console.log("spawn requested");
     //générer random la pièce qui va tomber
     let piecesType = Object.keys(TETROMINOES);
     let randomPieceIndex = Math.floor(Math.random() * piecesType.length);
@@ -151,17 +150,24 @@ function endGame(io, socket) {
   });
 }
 
-function fixingPieces(io,socket)  {
-  socket.on("transfer_piece_from_moving_to_fixed",(playerIndex,code,piece)=>{
-    console.log("transfer pièce en received in back")
-    io.to(code).emit("transfer_grid_to_grid_to_be_done",(playerIndex,piece))
-  })
+function fixingPieces(io, socket) {
+  socket.on(
+    "transfer_piece_from_moving_to_fixed",
+    ({ playerIndex, code, piece }) => {
+      io.to(code).emit("transfer_grid_to_grid_to_be_done", {
+        playerIndex,
+        piece,
+      });
+    }
+  );
 }
+
 module.exports = {
   gameStart,
   spawnPiece,
   communicateMovingPieces,
   updateScores,
   endGame,
-  removeCompletedLines,fixingPieces
+  removeCompletedLines,
+  fixingPieces,
 };
