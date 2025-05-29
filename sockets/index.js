@@ -4,6 +4,7 @@ const {gameStart} = require("./multitris");
 const {communicateMovingPieces}= require("./multitris");
 const {updateScores} = require("./multitris");
 const {endGame} = require("./multitris")
+const {removeCompletedLines}= require("./multitris")
 const User = require("../models/users");
 
 module.exports = function registerSocketHandlers(io) {
