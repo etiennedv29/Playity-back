@@ -2,31 +2,31 @@ const { endPartController } = require("../controllers/parts");
 
 const COLS_PER_PLAYER = 10;
 const TETROMINOES = {
-  I: [[1, 1, 1, 1]],
+  // I: [[1, 1, 1, 1]],
   O: [
     [1, 1],
     [1, 1],
   ],
-  T: [
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
-  S: [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-  Z: [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-  J: [
-    [1, 0, 0],
-    [1, 1, 1],
-  ],
-  L: [
-    [0, 0, 1],
-    [1, 1, 1],
-  ],
+  // T: [
+  //   [0, 1, 0],
+  //   [1, 1, 1],
+  // ],
+  // S: [
+  //   [0, 1, 1],
+  //   [1, 1, 0],
+  // ],
+  // Z: [
+  //   [1, 1, 0],
+  //   [0, 1, 1],
+  // ],
+  // J: [
+  //   [1, 0, 0],
+  //   [1, 1, 1],
+  // ],
+  // L: [
+  //   [0, 0, 1],
+  //   [1, 1, 1],
+  // ],
 };
 
 const games = new Map();
@@ -162,6 +162,19 @@ function fixingPieces(io, socket) {
   );
 }
 
+function checkCompletedLine(io, socket) {
+  socket.on(
+    "check_completed_line",
+    ({ playerIndex, code, pieceToTransfer }) => {
+      console.log(playerIndex, pieceToTransfer);
+      io.to(code).emit("check_completed_line_to_be_done", {
+        playerIndex,
+        pieceToTransfer,
+      });
+    }
+  );
+}
+
 module.exports = {
   gameStart,
   spawnPiece,
@@ -170,4 +183,5 @@ module.exports = {
   endGame,
   removeCompletedLines,
   fixingPieces,
+  checkCompletedLine,
 };

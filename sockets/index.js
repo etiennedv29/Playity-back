@@ -1,11 +1,15 @@
 const registerLobbyHandlers = require("./lobby");
-const { spawnPiece } = require("./multitris");
-const { gameStart } = require("./multitris");
-const { communicateMovingPieces } = require("./multitris");
-const { updateScores } = require("./multitris");
-const { endGame } = require("./multitris");
-const { removeCompletedLines } = require("./multitris");
-const { fixingPieces } = require("./multitris");
+const {
+  spawnPiece,
+  gameStart,
+  communicateMovingPieces,
+  updateScores,
+  endGame,
+  removeCompletedLines,
+  fixingPieces,
+  checkCompletedLine,
+} = require("./multitris");
+
 const User = require("../models/users");
 
 module.exports = function registerSocketHandlers(io) {
@@ -24,5 +28,6 @@ module.exports = function registerSocketHandlers(io) {
     endGame(io, socket);
     removeCompletedLines(io, socket);
     fixingPieces(io, socket);
+    checkCompletedLine(io, socket);
   });
 };
