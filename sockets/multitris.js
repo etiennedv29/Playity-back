@@ -33,8 +33,6 @@ const games = new Map();
 
 function spawnPiece(io, socket) {
   socket.on("spawn_piece", ({ currentPlayerIndex, code }) => {
-    // console.log({ currentPlayerIndex }, { code });
-
     //générer random la pièce qui va tomber
     let piecesType = Object.keys(TETROMINOES);
     let randomPieceIndex = Math.floor(Math.random() * piecesType.length);
@@ -63,13 +61,10 @@ function spawnPiece(io, socket) {
 
 function gameStart(io, socket) {
   socket.on("gameStart", ({ code, startedBy, partId }) => {
-    console.log("gameStarted by admin côté back");
     let gameStarted = { gameStartInfo: true, startedBy, partId };
     io.to(code).emit("gameStartedNow", gameStarted);
   });
 }
-
-module.exports = { gameStart, spawnPiece };
 
 function communicateMovingPieces(io, socket) {
   socket.on(
@@ -78,23 +73,30 @@ function communicateMovingPieces(io, socket) {
       { oldShape, oldRow, oldCol },
       { playerIndex, newShape, newRow, newCol, code },
     ]) => {
-      console.log("old Piece Received in back ", {
-        oldShape,
-        oldRow,
-        oldCol,
-      });
-      console.log("new Piece received in back", {
-        playerIndex,
-        newShape,
-        newRow,
-        newCol,
-        code,
-      });
+      // console.log("old Piece Received in back ", {
+      //   oldShape,
+      //   oldRow,
+      //   oldCol,
+      // });
+      // console.log("new Piece received in back", {
+      //   playerIndex,
+      //   newShape,
+      //   newRow,
+      //   newCol,
+      //   code,
+      // });
       let oldPiece = { oldShape, oldRow, oldCol };
       let newPiece = { playerIndex, newShape, newRow, newCol };
       socket.to(code).emit("receive_piece", [oldPiece, newPiece]);
     }
   );
+}
+
+function removeCompletedLines(io, socket) {
+  socket.on("completed_lines", (playerId, rowsIndex, code) => {
+    console.log("completedLines =>", rowsIndex);
+    io.to(code).emit("delete_lines", (playerId, rowsIndex));
+  });
 }
 
 function updateScores(io, socket) {
@@ -140,9 +142,9 @@ function updateScores(io, socket) {
 
 function endGame(io, socket) {
   socket.on("end_game", ({ code, partId }) => {
-    console.log("fin de partie bien émise par le looser");
+    console.log("fin de partie émise par le looser");
     io.to(code).emit("end_game", code);
-    const gamePartDetails = games.get(code);   
+    const gamePartDetails = games.get(code);
     endPartController(partId, gamePartDetails);
   });
 }
@@ -153,4 +155,5 @@ module.exports = {
   communicateMovingPieces,
   updateScores,
   endGame,
+  removeCompletedLines,
 };

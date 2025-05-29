@@ -20,5 +20,6 @@ module.exports = function registerSocketHandlers(io) {
     communicateMovingPieces(io,socket);
     updateScores(io, socket);
     endGame(io, socket);
+    removeCompletedLines(io,socket)
   });
 };
