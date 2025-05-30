@@ -20,7 +20,7 @@ const { Server } = require("socket.io");
 //const { checkSecurity } = require("../middlewares/security");
 
 const io = new Server(server, {
-  cors: { origin: ["http://localhost:3000", "https://admin.socket.io"], credentials: true },
+  cors: { origin: ["http://localhost:3000","https://p01--playity-back--c9dy8yj49fkp.code.run", "https://admin.socket.io"], credentials: true },
   
 });
 
