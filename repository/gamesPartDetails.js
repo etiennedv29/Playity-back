@@ -12,13 +12,10 @@ const getPlayerStats = (e) => {
 
     if (e.options.includes("required") && e.propertyType.toLowerCase() === "objectid") {
         playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-        console.log('type objet trouvé');
     } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "number") {
         playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-        console.log('type number trouvé');
     } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "string") {
         playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-        console.log('type string trouvé');
     }
 
     return playerStat;
