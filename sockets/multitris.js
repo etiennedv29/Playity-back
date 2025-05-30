@@ -2,7 +2,7 @@ const { endPartController } = require("../controllers/parts");
 
 const COLS_PER_PLAYER = 10;
 const TETROMINOES = {
-  // I: [[1, 1, 1, 1]],
+  I: [[1, 1, 1, 1]],
   O: [
     [1, 1],
     [1, 1],
