@@ -1,37 +1,33 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
+//Module dependencies.
 
 var app = require("../app");
 var debug = require("debug")("hackatweet-back:server");
 var http = require("http");
+const { instrument } = require("@socket.io/admin-ui");
 
-/**
- * Get port from environment and store in Express.
- */
-
+//Get port from environment and store in Express.
 var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-/**
- * Create HTTP server.
- */
-
+// Create HTTP server.
 var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+//Listen on provided port, on all network interfaces.
 
 const { Server } = require("socket.io");
 //const { checkSecurity } = require("../middlewares/security");
 
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: { origin: ["http://localhost:3000", "https://admin.socket.io"], credentials: true },
+  
 });
 
+instrument(io, {
+  auth: false,
+  mode: "development",
+});
 //io.use(checkSecurity);
 
 require("../sockets")(io); // 👈 logique socket ici
