@@ -20,7 +20,7 @@ const { Server } = require("socket.io");
 //const { checkSecurity } = require("../middlewares/security");
 
 const io = new Server(server, {
-  cors: { origin: ["http://localhost:3000","https://p01--playity-back--c9dy8yj49fkp.code.run", "https://admin.socket.io"], credentials: true },
+  cors: { origin: ["http://localhost:3000","https://p01--playity-back--c9dy8yj49fkp.code.run", "https://playity-back-production.up.railway.app","https://admin.socket.io"], credentials: true },
   
 });
 
@@ -30,7 +30,7 @@ instrument(io, {
 });
 //io.use(checkSecurity);
 
-require("../sockets")(io); // 👈 logique socket ici
+require("../sockets")(io); 
 
 server.listen(port);
 server.on("error", onError);
