@@ -1,88 +1,98 @@
-const PartDetails = require('../models/gamesPartDetails');
-const mongoose = require('mongoose');
+const PartDetails = require("../models/gamesPartDetails");
+const mongoose = require("mongoose");
 
 const getPlayerStats = (e) => {
-    // console.log('élément transmis à getPlayerStats : ', e);
-    const playerStat = {}
-    const properties = {
-        string: "",
-        number: 0,
-        objectid: null
-    }
+  const playerStat = {};
+  const properties = {
+    string: "",
+    number: 0,
+    objectid: null,
+  };
 
-    if (e.options.includes("required") && e.propertyType.toLowerCase() === "objectid") {
-        playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-    } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "number") {
-        playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-    } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "string") {
-        playerStat[e.property] = properties[e.propertyType.toLowerCase()];
-    }
+  if (
+    e.options.includes("required") &&
+    e.propertyType.toLowerCase() === "objectid"
+  ) {
+    playerStat[e.property] = properties[e.propertyType.toLowerCase()];
+  } else if (
+    e.options.includes("required") &&
+    e.propertyType.toLowerCase() === "number"
+  ) {
+    playerStat[e.property] = properties[e.propertyType.toLowerCase()];
+  } else if (
+    e.options.includes("required") &&
+    e.propertyType.toLowerCase() === "string"
+  ) {
+    playerStat[e.property] = properties[e.propertyType.toLowerCase()];
+  }
 
-    return playerStat;
-}
+  return playerStat;
+};
 
-//         3. On injectera ensuite cet objet dans la propriété gameStatistics
+// On injectera ensuite cet objet dans la propriété gameStatistics
+// Exemple de paramètre d'entrée : "245425d11452ds154cd"
+// Exemple de sortie :
+// {
+//  propriété1: 0, (type number)
+//  propriété2 : "", (type string)
+//  propriété3 : 0, (type number)
+// }
 
-//         Exemple de paramètre d'entrée : "245425d11452ds154cd"
-
-//         Exemple de sortie : 
-//         {
-//         propriété1: 0, (type number)
-//         propréiété2 : "", (type string)
-//         propriété3 : 0, (type number)
-//         }
-// 
-
-// Fonction qui vient récupérer les types de statitique pour un jeu donné :
-//   1. On lui donne l'Id du jeu en entrée
+/**
+ * Fonction qui vient récupérer les types de statitique pour un jeu donné
+ *
+ * @param {*} gameId
+ * @param {*} players
+ * @returns
+ */
 const getGamePartDetail = async (gameId, players) => {
+  // On initialise un objet de correspondance des propriétés
+  let gameProperties = {};
 
-//   2. On initialise un objet de correspondance des propriétés
-    let gameProperties = {};
+  const properties = {
+    string: "",
+    number: 0,
+  };
 
-    const properties = {
-        string: "",
-        number: 0,
-    }
+  const data = await PartDetails.findOne({
+    gameId: new mongoose.Types.ObjectId(gameId),
+  });
 
-    console.log('Id de la game : ', gameId);
-    const data = await PartDetails.findOne({gameId: new mongoose.Types.ObjectId(gameId)});
-    console.log(data);
+  // Si l'id de la game n'est pas trouvé
+  if (!data) {
+    return;
+  }
 
-    // Si l'id de la game n'est pas trouvé, on le signale dans la console
-    if (!data) {
-        console.log('aucune stat de jeu trouvée')
-        return
-    }
+  const details = await data.details;
+  const allPlayersStats = [];
+  let playerStats = {};
 
-    const details = await data.details;
-    const allPlayersStats = [];
-    let playerStats = {};
-
-    for (let i = 0; i < players.length; i++) {
-        
-        data.playersStats.forEach((e) => {
-            
-            playerStats = {...playerStats, ...getPlayerStats(e)}
-        })
-        playerStats.player = players[i];
-
-        //console.log(`Objet stats du player ${i} : ${{...playerStats}}`)
-        allPlayersStats.push(playerStats);
-    }
-
-    details.forEach((e) => {
-        if (e.options.includes("required") && e.propertyType.toLowerCase() === "string") {
-            gameProperties[e.property] = properties[e.propertyType.toLowerCase()];
-        } else if (e.options.includes("required") && e.propertyType.toLowerCase() === "number") {
-            gameProperties[e.property] = properties[e.propertyType.toLowerCase()];
-        }
+  for (let i = 0; i < players.length; i++) {
+    data.playersStats.forEach((e) => {
+      playerStats = { ...playerStats, ...getPlayerStats(e) };
     });
+    playerStats.player = players[i];
 
-    
-    gameProperties.playersStats = allPlayersStats;
-    
-    return gameProperties;
-}
+    allPlayersStats.push(playerStats);
+  }
 
-module.exports = { getGamePartDetail }
+  details.forEach((e) => {
+    if (
+      e.options.includes("required") &&
+      e.propertyType.toLowerCase() === "string"
+    ) {
+      gameProperties[e.property] = properties[e.propertyType.toLowerCase()];
+    } else if (
+      e.options.includes("required") &&
+      e.propertyType.toLowerCase() === "number"
+    ) {
+      gameProperties[e.property] = properties[e.propertyType.toLowerCase()];
+    }
+  });
+
+  gameProperties.playersStats = allPlayersStats;
+
+  return gameProperties;
+};
+
+module.exports = { getGamePartDetail };

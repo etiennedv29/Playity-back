@@ -33,19 +33,18 @@ const games = new Map();
 
 function spawnPiece(io, socket) {
   socket.on("spawn_piece", ({ currentPlayerIndex, code }) => {
-    console.log("spawn requested");
-    //générer random la pièce qui va tomber
+    // Générer random la pièce qui va tomber
     let piecesType = Object.keys(TETROMINOES);
     let randomPieceIndex = Math.floor(Math.random() * piecesType.length);
     let randomPieceShape = TETROMINOES[piecesType[randomPieceIndex]];
 
-    //colonne de la case en haut à gauche de la pièce qui va tomber (en récupérant la largeur de la pièce : randomPieceShape[0])
+    // Colonne de la case en haut à gauche de la pièce qui va tomber (en récupérant la largeur de la pièce : randomPieceShape[0])
     let newPieceStartCol = Math.floor(
       currentPlayerIndex * COLS_PER_PLAYER +
         (COLS_PER_PLAYER - randomPieceShape[0].length) / 2
     );
 
-    //pièce à envoyer à tout le monde
+    // Pièce à envoyer à tout le monde
     let spawnedPiece = {
       playerIndex: currentPlayerIndex,
       newShape: randomPieceShape,
@@ -54,7 +53,7 @@ function spawnPiece(io, socket) {
     };
     let oldPiece = { oldShape: [], oldRow: "", oldCol: "" };
 
-    //envoi à tout le monde dans le lobby
+    // Envoi à tout le monde dans le lobby
 
     io.to(code).emit("receive_piece", [oldPiece, spawnedPiece]);
   });

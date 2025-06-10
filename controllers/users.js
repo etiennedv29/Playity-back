@@ -6,24 +6,22 @@ const bcrypt = require("bcrypt");
 
 const registerGuest = async (req, res, next) => {
   try {
-    //Generation aléatoire de userName
+    // Generation aléatoire de userName
     const username = "Guest" + Math.floor(Math.random() * 99999999) + 1;
 
-    //generation aléatoire de l'avatar
+    // Generation aléatoire de l'avatar
     const seed = Math.random().toString(36).substring(2, 12);
     const avatar = `https://api.dicebear.com/7.x/adventurer/png?seed=${seed}`;
 
-    //saving the user with its avatar generated
+    // Saving the user with its avatar generated
     const userObject = await guestRegister({ avatar, username });
     res.json(userObject);
   } catch (exception) {
-    console.log(exception);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 const register = async (req, res, next) => {
-  console.log(req.body);
   try {
     if (
       !req.body.connectionWithSocials &&
@@ -41,24 +39,22 @@ const register = async (req, res, next) => {
     const user = await getUserByEmail(req.body.email.toLowerCase());
 
     if (user === null) {
-      //generation aléatoire de l'avatar
+      // Generation aléatoire de l'avatar
       const seed = Math.random().toString(36).substring(2, 12);
       const avatar = `https://api.dicebear.com/7.x/adventurer/png?seed=${seed}`;
 
-      //saving the user with its avatar generated
+      // Saving the user with its avatar generated
       const userObject = await userRegister({ avatar, ...req.body });
       res.json(userObject);
     } else {
       res.status(409).json({ error: "User already exists" });
     }
   } catch (exception) {
-    console.log(exception);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 const login = async (req, res, next) => {
-  console.log(req.body);
   try {
     if (
       !req.body.connectionWithSocials &&
@@ -68,7 +64,6 @@ const login = async (req, res, next) => {
     }
 
     const user = await getUserByEmail(req.body.email.toLowerCase());
-    console.log("user found at login=", user);
 
     if (
       user &&
@@ -82,18 +77,15 @@ const login = async (req, res, next) => {
       res.status(401).json({ error: "User not found or wrong password" });
     }
   } catch (exception) {
-    console.log(exception);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 const findUserByEmail = async (req, res, next) => {
-  console.log("get user by email=", req.params.email);
   try {
     const user = await getUserByEmail(req.params.email);
     res.json(user);
   } catch (exception) {
-    console.log(exception);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

@@ -1,4 +1,3 @@
-const { checkBody } = require("../utils/string");
 const { getGames: getGamesDB } = require("../repository/games");
 
 const getGames = async (req, res, next) => {
