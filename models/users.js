@@ -7,17 +7,19 @@ const premiumDataSchema = new mongoose.Schema({
   facture: { type: String, required: true },
 });
 
-const preferencesSchema = new mongoose.Schema({
-  newsletterSubmission: { type: Boolean, required: true, default: false },
-});
+// Créé en anticipation post-projet
+// const preferencesSchema = new mongoose.Schema({
+//   newsletterSubmission: { type: Boolean, required: true, default: false },
+// });
 
-const achievementsSchema = new mongoose.Schema({
-  oneGame: { type: Boolean, default: false },
-  fiveGames: { type: Boolean, default: false },
-  hundredGames: { type: Boolean, default: false },
-  oneFriend: { type: Boolean, default: false },
-  fiveFriends: { type: Boolean, default: false },
-});
+// Créé en anticipation post-projet
+// const achievementsSchema = new mongoose.Schema({
+//   oneGame: { type: Boolean, default: false },
+//   fiveGames: { type: Boolean, default: false },
+//   hundredGames: { type: Boolean, default: false },
+//   oneFriend: { type: Boolean, default: false },
+//   fiveFriends: { type: Boolean, default: false },
+// });
 
 const usersSchema = mongoose.Schema({
   firstName: {

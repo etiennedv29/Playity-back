@@ -19,7 +19,6 @@ const createLobby = async (req, res, next) => {
 
     res.json({ code: lobby.code });
   } catch (exception) {
-    console.log(exception);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

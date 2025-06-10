@@ -14,6 +14,10 @@ const GPDSchema = new mongoose.Schema({
     }]
 })
 
+const gamePartDetailsModel = mongoose.models.gamePartDetails || mongoose.model("gamespartdetails", GPDSchema)
+
+module.exports = gamePartDetailsModel;
+
 // Exemple de détails de partie pour 1 jeu
 
 // const test = {
@@ -43,7 +47,3 @@ const GPDSchema = new mongoose.Schema({
 //         }
 //     ],
 // }
-
-const gamePartDetailsModel = mongoose.models.gamePartDetails || mongoose.model("gamespartdetails", GPDSchema)
-
-module.exports = gamePartDetailsModel;

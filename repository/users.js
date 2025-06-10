@@ -39,7 +39,6 @@ const userRegister = async ({
 
 const checkToken = async (token) => {
   const user = await User.findOne({ token });
-  console.log(user, !!user);
   return !!user;
 };
 

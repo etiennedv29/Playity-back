@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { Types } = require("mongoose");
 
 const partsSchema = mongoose.Schema({
   game: {
@@ -20,15 +19,6 @@ const partsSchema = mongoose.Schema({
   gamePartDetails: { type: mongoose.Schema.Types.Mixed },
 });
 
-// const parts = {
-//   game: "fheofhozeh",
-//   lobby: "hfohfoezhf",
-//   status: "ongoing",
-//   partStatistics: {
-//     completedLines: 0,
-//     teamScore: null
-//   }
-// }
 
 const partsModel = mongoose.model("parts", partsSchema);
 
