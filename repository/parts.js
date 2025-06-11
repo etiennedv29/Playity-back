@@ -1,11 +1,13 @@
 const Part = require("../models/parts");
 const mongoose = require("mongoose");
 
+// Fonction d'enregistrement d'une partie en BDD, dans la collection "parts"
 const createPart = async (part) => {
   const newPart = await new Part(part);
   return newPart.save();
 };
 
+// Fonction d'enregistrement des scores d'un joueur donné pour une partie donnée
 const savePartPlayersStats = async (
   partId,
   playerId,
@@ -30,6 +32,7 @@ const savePartPlayersStats = async (
   }
 };
 
+// Fonction d'enregistrement des scores pour une partie donnée
 const savePartStats = async (
   partId,
   teamScore,

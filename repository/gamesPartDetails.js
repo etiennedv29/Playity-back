@@ -1,6 +1,8 @@
 const PartDetails = require("../models/gamesPartDetails");
 const mongoose = require("mongoose");
 
+// Fonction de récupération des types de statistique d'un joueur, pour un type de jeu donné
+// Exemple : Dans le jeu Multitris, les stats d'un joueur seront le score, le nombre de pièces jouées, et le nombre de lignes complétées
 const getPlayerStats = (e) => {
   const playerStat = {};
   const properties = {
@@ -9,6 +11,7 @@ const getPlayerStats = (e) => {
     objectid: null,
   };
 
+  // Pour chaque type de propriété, initialise la stat du joueur avec sa valeur par défaut, indiquée dans l'objet de référence properties
   if (
     e.options.includes("required") &&
     e.propertyType.toLowerCase() === "objectid"
@@ -39,7 +42,7 @@ const getPlayerStats = (e) => {
 // }
 
 /**
- * Fonction qui vient récupérer les types de statitique pour un jeu donné
+ * Fonction qui vient récupérer les types de statitiques pour un jeu donné
  *
  * @param {*} gameId
  * @param {*} players
@@ -58,7 +61,7 @@ const getGamePartDetail = async (gameId, players) => {
     gameId: new mongoose.Types.ObjectId(gameId),
   });
 
-  // Si l'id de la game n'est pas trouvé
+  // Si l'id de la game n'est pas trouvé, on ne fait rien
   if (!data) {
     return;
   }
@@ -67,6 +70,7 @@ const getGamePartDetail = async (gameId, players) => {
   const allPlayersStats = [];
   let playerStats = {};
 
+  // Pour chaque joueur de la partie, on initialise ses statistiques, on ajoute son ID dans la propriété player, puis on l'ajoute dans le tableau gloabl des stats de joueurs "allPlayerStats"
   for (let i = 0; i < players.length; i++) {
     data.playersStats.forEach((e) => {
       playerStats = { ...playerStats, ...getPlayerStats(e) };

@@ -25,6 +25,7 @@ const getLobbyByCode = async (code) => {
   return Lobby.findOne({ code }).populate("players");
 };
 
+// Fonction qui permet de récupérer les IDs des joueurs d'un lobby avec l'ID de ce lobby
 const getPlayersByLobbyId = async (lobbyId) => {
   let players = [];
   const data = await Lobby.findOne({_id: lobbyId});
