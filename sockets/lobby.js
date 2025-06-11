@@ -10,8 +10,17 @@ const isAdminConnectedToLobby = (lobby) => {
 
 const isAdmin = (lobby, idAdmin) => lobby.admin === idAdmin;
 
+/**
+ * Return the number of spot left in lobby
+ *
+ * @param {*} lobby
+ * @param {*} userId
+ * @returns
+ */
 const getNbSpotLeft = (lobby, userId) => {
   let nbPlayersConnected = lobby.players.length;
+
+  //si l'admin n'est pas connecté et que le user en question n'est pas admin. On doit enlever un spot
   if (!isAdminConnectedToLobby(lobby) && !isAdmin(userId)) {
     nbPlayersConnected -= 1;
   }
@@ -20,7 +29,6 @@ const getNbSpotLeft = (lobby, userId) => {
 };
 
 module.exports = function register(io, socket) {
-
   socket.on("joinLobby", async ({ code, userId }, callback) => {
     const lobby = await getLobbyByCode(code);
 
