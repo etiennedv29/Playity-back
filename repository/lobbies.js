@@ -1,5 +1,4 @@
 const Lobby = require("../models/lobbies");
-const { Types } = require("mongoose");
 
 const createLobby = async (params) => {
   const lobby = new Lobby(params);
@@ -7,12 +6,10 @@ const createLobby = async (params) => {
 };
 
 const addPlayerToLobby = async (code, playerId) => {
-  console.log(code, playerId, "addPlayerToLobby");
-
   return await Lobby.findOneAndUpdate(
     { code },
-    { $addToSet: { players: playerId } }, //addtoSet permet de push dans un tableau de sous doc mais gère l'unicité
-    { new: true } //récupérer la derniere version du lobby à jour
+    { $addToSet: { players: playerId } }, // addtoSet permet de push dans un tableau de sous doc mais gère l'unicité
+    { new: true } // Récupérer la derniere version du lobby à jour
   ).populate("players");
 };
 

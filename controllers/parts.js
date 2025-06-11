@@ -25,23 +25,19 @@ const createPartController = async (req, res, next) => {
     res.json({ partId: newPart._id });
 
     } catch (exception) {
-    console.log(exception);
     res.status(500).json({ error: "Internal Server Error" });
     }
 }
 
 const endPartController = async (partId, gamePartDetails) => {
     try {
-        console.log('ending game...', {partId});
         changePartStatus(partId);
         savePartStats(partId,gamePartDetails.teamScore, gamePartDetails.completedLines,gamePartDetails.numberOfPieces);
         for (let i = 0; i < gamePartDetails.playersStats.length; i++) {
-            console.log("on est dans la boucle, player=> ",{i}, "playerId=", gamePartDetails.playersStats[i].player)
             savePartPlayersStats(partId,gamePartDetails.playersStats[i].player,gamePartDetails.playersStats[i].score, gamePartDetails.playersStats[i].completedLines);
         }
         
     } catch (exception) {
-        console.log(exception);
         res.status(500).json({ error: "Une erreur s'est produite" });
     }
 
