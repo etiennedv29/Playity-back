@@ -31,6 +31,12 @@ const TETROMINOES = {
 
 const games = new Map();
 
+/**
+ * Génération random d'une pièce parmi la liste puis transmission à tous les joueurs, dont le demandeur
+ * 
+ * @param {*} io 
+ * @param {*} socket 
+ */
 function spawnPiece(io, socket) {
   socket.on("spawn_piece", ({ currentPlayerIndex, code }) => {
     // Générer random la pièce qui va tomber
@@ -59,6 +65,12 @@ function spawnPiece(io, socket) {
   });
 }
 
+/**
+ * Récupération de l'information que l'admin a lancé la partie et transmission à tous les joueurs dont l'admin
+ * 
+ * @param {*} io 
+ * @param {*} socket 
+ */
 function gameStart(io, socket) {
   socket.on("gameStart", ({ code, startedBy, partId }) => {
     let gameStarted = { gameStartInfo: true, startedBy, partId };
@@ -66,6 +78,12 @@ function gameStart(io, socket) {
   });
 }
 
+/**
+ * à chaque mouvement de pièce (d,g,b,rotation), l'info est récupérée et renvoyée à tous les joueurs
+ * 
+ * @param {*} io 
+ * @param {*} socket 
+ */
 function communicateMovingPieces(io, socket) {
   socket.on(
     "move_piece",
@@ -79,6 +97,7 @@ function communicateMovingPieces(io, socket) {
     }
   );
 }
+
 
 function removeCompletedLines(io, socket) {
   socket.on("completed_lines", (playerId, rowsIndex, code) => {
@@ -127,6 +146,12 @@ function updateScores(io, socket) {
   );
 }
 
+/**
+ * Lorsqu'il n'est pas possible de poser une pièce, le jeu s'arrête. L'info est envoyée en back pour broadcast à tous les joueurs
+ * 
+ * @param {*} io 
+ * @param {*} socket 
+ */
 function endGame(io, socket) {
   socket.on("end_game", ({ code, partId }) => {
     io.to(code).emit("end_game", code);
@@ -135,6 +160,12 @@ function endGame(io, socket) {
   });
 }
 
+/**
+ * Lorsq'un joueur a une pièce qui arrive en bas, il communique l'info à tous les autres joueurs
+ * 
+ * @param {*} io 
+ * @param {*} socket 
+ */
 function fixingPieces(io, socket) {
   socket.on(
     "transfer_piece_from_moving_to_fixed",
