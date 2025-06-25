@@ -58,10 +58,28 @@ const guestRegister = async ({ username, avatar }) => {
 
 const getUsers = async (params) => await User.find(params);
 
+const updateUserAccount = async (infos) => {
+  const { id, username, email, name, birthday } = infos;
+  const updateFields = {};
+
+  if (username) updateFields.username = username;
+  if (email) updateFields.email = email;
+  if (name) updateFields.name = name;
+  if (birthday) updateFields.birthday = birthday;
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: id },
+    { $set: updateFields },
+    { new: true } // renvoie le document modifié
+  );
+  return updatedUser;
+};
+
 module.exports = {
   userRegister,
   checkToken,
   getUserByEmail,
   getUsers,
   guestRegister,
+  updateUserAccount,
 };

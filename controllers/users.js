@@ -1,4 +1,4 @@
-const { userRegister, getUserByEmail } = require("../repository/users");
+const { userRegister, getUserByEmail,updateUserAccount } = require("../repository/users");
 const { guestRegister } = require("../repository/users");
 
 const { checkBody } = require("../utils/string");
@@ -90,4 +90,14 @@ const findUserByEmail = async (req, res, next) => {
   }
 };
 
-module.exports = { register, registerGuest, login, findUserByEmail };
+const updateAccount= async (req,res, next)=>{
+  try{
+    const updatedUser = await updateUserAccount(req.params)
+    res.json(updatedUser)
+  }
+  catch(exception){
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+module.exports = { register, registerGuest, login, findUserByEmail,updateAccount };
