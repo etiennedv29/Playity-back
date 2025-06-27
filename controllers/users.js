@@ -92,7 +92,7 @@ const findUserByEmail = async (req, res, next) => {
 
 const updateAccount= async (req,res, next)=>{
   try{
-    const updatedUser = await updateUserAccount(req.params)
+    const updatedUser = await updateUserAccount(req.body)
     res.json(updatedUser)
   }
   catch(exception){

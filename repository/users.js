@@ -59,7 +59,8 @@ const guestRegister = async ({ username, avatar }) => {
 const getUsers = async (params) => await User.find(params);
 
 const updateUserAccount = async (infos) => {
-  const { id, username, email, name, birthday } = infos;
+  try{
+  const { id=infos.userId, username, email, name, birthday } = infos;
   const updateFields = {};
 
   if (username) updateFields.username = username;
@@ -72,7 +73,10 @@ const updateUserAccount = async (infos) => {
     { $set: updateFields },
     { new: true } // renvoie le document modifié
   );
-  return updatedUser;
+  return updatedUser;}
+  catch(exception){
+    res.status(500).json({ error: "Database Error" });
+  }
 };
 
 module.exports = {
